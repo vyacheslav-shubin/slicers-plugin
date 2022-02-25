@@ -2,3 +2,4 @@
 /plugin/config_local.json
 /plugin/.*__pycache__/.*
 Makefile
+.idea
