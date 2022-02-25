@@ -31,7 +31,7 @@ class ConsoleTab(QtWidgets.QWidget):
         self.btSenb = QtWidgets.QPushButton()
         self.btSenb.setMaximumSize(QtCore.QSize(100, 16777215))
         self.btSenb.setMinimumWidth(100)
-        self.btSenb.setText("Send")
+        self.btSenb.setText(self.app.lang["send"])
         self.btSenb.setDisabled(True)
 
 

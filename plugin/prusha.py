@@ -3,7 +3,7 @@ from shui.MainUI import qt_application
 from shui.utils import StartMode
 appStartMode=StartMode.UNKNOWN
 
-if os.getenv('START_MODE')=='TEST':
+if os.getenv('START_MODE')=='STANDALONE':
     appStartMode=StartMode.STANDALONE
 else:
     appStartMode=StartMode.PRUSA

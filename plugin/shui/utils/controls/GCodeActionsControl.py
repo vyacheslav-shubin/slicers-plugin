@@ -69,7 +69,6 @@ class GCodeActionsControl(QtWidgets.QWidget):
                 idx=idx+1
                 if idx==8:
                     break
-                print(s)
 
         self.uartControls=self.uartControls + [self.tbMoveXPlus,self.tbMoveYPlus,self.tbMoveZPlus,self.tbMoveXMinus, self.tbMoveYMinus,self.tbMoveZMinus]+self.snippet_btns
 

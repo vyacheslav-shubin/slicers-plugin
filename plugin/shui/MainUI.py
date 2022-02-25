@@ -35,15 +35,14 @@ class App(QtCore.QObject):
         elif appStartMode==Core.StartMode.STANDALONE:
             if len(argv)>1:
                 self.inputFileName=sys.argv[1]
-            else:
-                if os.getenv('START_MODE')=='TEST':
-                    self.inputFileName="/home/shubin/electronic/firmware/mks-robin/my/shui-src/bh.gcode"
             pass
         elif appStartMode==Core.StartMode.CURA:
             if "output_file_name" in kwargs:
                 self.outputFileName = kwargs["output_file_name"]
 
-        if self.inputFileName is not None and self.outputFileName is None:
+        if self.inputFileName is None:
+            self.inputFileName = os.path.join(os.path.dirname(os.path.abspath(__file__)),"..", "shui_prusa.gcode")
+        if self.outputFileName is None:
             self.outputFileName = os.path.basename(self.inputFileName)
         self.wifiUart = ConnectionThread(self)
         config_file="config_local.json" if os.getenv('USER')=='shubin' else "config.json"
@@ -81,6 +80,16 @@ class App(QtCore.QObject):
         self.networkManager.setProxy(self.proxy)
 
         pass
+
+    def selectFile(self):
+        options = QtWidgets.QFileDialog.Options()
+        options |= QtWidgets.QFileDialog.DontUseNativeDialog
+        fileName, _ = QtWidgets.QFileDialog.getOpenFileName(None, "Open file", None, "All Files (*);;GCODE Files (*.gco)", options=options)
+        if fileName:
+            self.inputFileName=fileName
+            self.outputFileName = os.path.basename(self.inputFileName)
+            return True
+        return False
 
 
 class MainWidget(QtWidgets.QDialog):

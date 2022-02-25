@@ -3,15 +3,17 @@
     "inherited":["en"],
     "lang": {
       "close": "Закрыть",
+      "send": "Отправить",
       "connect": "Подключить",
       "disconnect": "Отключить",
+      "select": "Выбрать",
 
       "file": "Файл",
       "terminal": "Терминал",
       "printer": "Принтер",
 
       "start-printing": "Запустить печать",
-      "output-name": "Имя файла",
+      "output-name": "Файл",
 
       "save-to-file": "Сохранить файл",
       "send-to-printer": "Отправить на печать",
@@ -28,6 +30,8 @@
     "lang": {
       "title": "SHUI Wifi Plugin",
       "close": "Close",
+      "send": "Send",
+      "select": "Select",
       "connect": "Connect",
       "disconnect": "Disconnect",
 
@@ -36,7 +40,7 @@
       "printer": "Printer",
 
       "start-printing": "Start printing",
-      "output-name": "File name",
+      "output-name": "File",
 
       "save-to-file": "Save to file",
       "send-to-printer": "Send to SHUI Wifi",
