@@ -1,5 +1,5 @@
 /build/
 /plugin/config_local.json
-/plugin/.*__pycache__/.*
+*__pycache__*
 Makefile
 .idea
