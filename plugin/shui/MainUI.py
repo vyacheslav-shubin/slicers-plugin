@@ -125,6 +125,7 @@ class MainWidget(QtWidgets.QDialog):
         self.printerSelectLayout.setContentsMargins(2, 2, 2, 2)
 
         self.tabWidget = QtWidgets.QTabWidget(self)
+        self.tabWidget.currentChanged.connect(self.tabChanged)
 
         self.mainLayout.addLayout(self.printerSelectLayout)
         self.mainLayout.addWidget(self.tabWidget)
@@ -135,6 +136,10 @@ class MainWidget(QtWidgets.QDialog):
         self.btClose.clicked.connect(self.doClose)
         self.app.onUartConnect.connect(self.doOnConnect)
         self.doOnConnect(False)
+        pass
+
+    def tabChanged(self, index):
+        self.btConnect.setVisible(index!=0)
         pass
 
     def doClose(self):

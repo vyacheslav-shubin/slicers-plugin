@@ -131,7 +131,7 @@ class FileTab(QtWidgets.QWidget):
             from .WifiSender import WifiSender
             wifiSender=WifiSender(self.app, self.leFileName.text())
             self.lockUILock(True)
-            wifiSender.save(self.parser.getProcessedGcode(), start=True)
+            wifiSender.save(self.parser.getProcessedGcode(), start=self.cbStartPrinting.checkState()==QtCore.Qt.Checked)
             self.sender=wifiSender
         except Exception as e:
             self.onMessage(str(e))

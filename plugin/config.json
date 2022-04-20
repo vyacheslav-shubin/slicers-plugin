@@ -19,5 +19,9 @@
     "OPT2": "M117 OPT2",
     "OPT3": "M117 OPT3",
     "OPT4": "M117 OPT4"
+  },
+  "templates": {
+    "move_xy_relative": "G91|G1{0}{1}F1000|G90",
+    "move_z_relative": "G91|G1Z{0}F1000|G90"
   }
 }

@@ -34,7 +34,7 @@ class GCodeActionsControl(QtWidgets.QWidget):
         self.tbMoveYMinus.setText("Y-")
 
         self.tbMoveXPlus=ShuiToolButton(self, app)
-        self.tbMoveXPlus.setText("X-")
+        self.tbMoveXPlus.setText("X+")
         self.tbMoveXMinus=ShuiToolButton(self, app)
         self.tbMoveXMinus.setText("X-")
 
@@ -79,20 +79,24 @@ class GCodeActionsControl(QtWidgets.QWidget):
 
         self.tbStep.clicked.connect(lambda: self.onStep(1))
 
-        self.tbMoveYPlus.clicked.connect(lambda: self.onMove("Y", 1))
-        self.tbMoveYMinus.clicked.connect(lambda: self.onMove("Y", -1))
-        self.tbMoveXPlus.clicked.connect(lambda: self.onMove("X", 1))
-        self.tbMoveXMinus.clicked.connect(lambda: self.onMove("X", -1))
-        self.tbMoveZPlus.clicked.connect(lambda: self.onMove("Z", 1))
-        self.tbMoveZMinus.clicked.connect(lambda: self.onMove("Z", -1))
+        self.tbMoveYPlus.clicked.connect(lambda: self.onMoveXY("Y", 1))
+        self.tbMoveYMinus.clicked.connect(lambda: self.onMoveXY("Y", -1))
+        self.tbMoveXPlus.clicked.connect(lambda: self.onMoveXY("X", 1))
+        self.tbMoveXMinus.clicked.connect(lambda: self.onMoveXY("X", -1))
+        self.tbMoveZPlus.clicked.connect(lambda: self.onMoveZ(1))
+        self.tbMoveZMinus.clicked.connect(lambda: self.onMoveZ(-1))
 
     def onSnippet(self, snippet):
         self.app.onUartMessage.emit(snippet)
         self.app.wifiUart.send(snippet)
         pass
 
-    def onMove(self, axis, direct):
-        self.onSnippet("G91|G1{0}{1}F1000|G90".format(axis, str(direct*self.step)))
+    def onMoveXY(self, axis, direct):
+        self.onSnippet(self.app.config["templates"]["move_xy_relative"].format(axis, str(direct*self.step)))
+        pass
+
+    def onMoveZ(self, direct):
+        self.onSnippet(self.app.config["templates"]["move_z_relative"].format(str(direct*self.step)))
         pass
 
     def onStep(self, event):
