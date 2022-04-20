@@ -34,7 +34,7 @@ class YandexSender(NetworkSender):
             ovr="overwrite=true&"
         else:
             ovr=""
-        self.request = self.makeRequest(YaPhase.REQUEST_URL, "https://cloud-api.yandex.net/v1/disk/resources/upload?"+ovr+"path=app:/a.html")
+        self.request = self.makeRequest(YaPhase.REQUEST_URL, "https://cloud-api.yandex.net/v1/disk/resources/upload?"+ovr+"path=app:/"+self.fileName)
         self.reply = self.app.networkManager.get(self.request)
         self.joinReply(self.reply)
         pass
