@@ -4,7 +4,7 @@ from sys import argv
 import json
 
 from PyQt5 import (QtCore, QtWidgets)
-from .utils import (ConnectionThread, Core, ConsoleTab, FileTab, PrinterControlTab)
+from .utils import (ConnectionThread, Core, ConsoleTab, FileTab, PrinterControlTab, TelegramTab)
 from PyQt5.QtNetwork import (QNetworkAccessManager, QNetworkProxy)
 
 
@@ -161,6 +161,11 @@ class MainWidget(QtWidgets.QDialog):
         self.tabs.append(tab)
         self.tabWidget.addTab(tab, tab.title)
 
+        tg_config=self.app.config.get("telegram")
+        if tg_config and (tg_config.get("key")!="") and (tg_config.get("chat_id")!=""):
+                tab = TelegramTab(self.app)
+                self.tabs.append(tab)
+                self.tabWidget.addTab(tab, tab.title)
         pass
 
     def doConnect(self):

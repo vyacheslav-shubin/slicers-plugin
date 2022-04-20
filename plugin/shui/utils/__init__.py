@@ -5,3 +5,4 @@ from .WifiUart import ConnectionThread
 from .Core import StartMode
 from .FileSaver import FileSaver
 from .WifiSender import WifiSender
+from .TelegramTab import TelegramTab

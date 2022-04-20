@@ -11,6 +11,7 @@
       "file": "Файл",
       "terminal": "Терминал",
       "printer": "Принтер",
+      "telegram": "Телеграм",
 
       "start-printing": "Запустить печать",
       "output-name": "Файл",
@@ -38,6 +39,8 @@
       "file": "File",
       "terminal": "Terminal",
       "printer": "Printer",
+      "telegram": "Telegram",
+      "telegram-bot-welcome": "Telegram bot console",
 
       "start-printing": "Start printing",
       "output-name": "File",

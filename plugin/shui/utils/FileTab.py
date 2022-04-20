@@ -87,9 +87,11 @@ class FileTab(QtWidgets.QWidget):
             newAct.triggered.connect(self.onSendToWifi)
             menu.addAction(newAct)
 
-            newAct = QtWidgets.QAction(self.app.lang["send-to-yandex"], menu)
-            newAct.triggered.connect(self.onSendToYandexDisk)
-            menu.addAction(newAct)
+            yandex_config=self.app.config.get("yandex")
+            if yandex_config and (yandex_config.get("key")!=""):
+                newAct = QtWidgets.QAction(self.app.lang["send-to-yandex"], menu)
+                newAct.triggered.connect(self.onSendToYandexDisk)
+                menu.addAction(newAct)
 
             menu.exec_(self.mapToGlobal(self.okButton.pos()))
 

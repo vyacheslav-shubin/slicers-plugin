@@ -8,6 +8,8 @@
 
   "yandex": { "key": "AQAAAAAX_________", "override": true },
 
+  "telegram" : {"key": "", "chat_id": ""},
+
   "language": "ru",
 
   "snippets": {
