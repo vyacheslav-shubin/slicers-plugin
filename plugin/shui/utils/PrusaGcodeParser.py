@@ -11,6 +11,7 @@ class PrusaGCodeParser(GCodeSource):
 
     def __init__(self, fileName):
         super().__init__()
+        self.gcode=None
         self.thumbs=[]
         self.fileName=fileName
 
@@ -84,6 +85,8 @@ class PrusaGCodeParser(GCodeSource):
                 row = bytearray()
 
     def getProcessedGcode(self):
+        if self.gcode is None:
+            return None
         rows=[]
         filter_proc=self.dummy_filter
         if (self.large_preview is not None) and (self.small_preview is not None):
