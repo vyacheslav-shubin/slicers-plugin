@@ -1,7 +1,7 @@
 from .FileSaver import NetworkSender
 from PyQt5 import (QtCore)
 from PyQt5.QtNetwork import (QHttpMultiPart, QHttpPart, QNetworkRequest, QNetworkAccessManager, QNetworkReply, QNetworkProxy)
-
+import requests
 
 class WifiSender(NetworkSender):
     reply=None
@@ -15,7 +15,6 @@ class WifiSender(NetworkSender):
             ip = self.app.config["printers"][self.app.selectedPrinter]["ip"]
             esp32 = self.app.config["printers"][self.app.selectedPrinter]["esp32"]
             request = QNetworkRequest(QtCore.QUrl("http://%s/upload" % ip))
-            request.setRawHeader(b'Connection', b'keep-alive')
             post_data = None
             if "start" in kwargs:
                 if kwargs["start"]:
