@@ -1,66 +1,28 @@
 from PyQt5 import (QtCore, QtWidgets)
-import requests
 import json
+from .Core import (StartMode, UiTab)
+from PyQt5.QtNetwork import (QNetworkRequest, QNetworkAccessManager, QNetworkReply, QNetworkProxy)
 
-
-class TgClient(QtCore.QThread):
-    tg_url = None
-    onMessage = QtCore.pyqtSignal(object)
-
-    def __init__(self, app):
-        QtCore.QThread.__init__(self)
-        self.tg_url="https://api.telegram.org/bot"+app.config["telegram"]["key"]+"/"
-        self.app=app
-
-    def transac(self, method, data):
-        return json.loads(requests.post(self.tg_url+method, json=data, verify=False).content)
-
-    def listen(self):
-        self.start()
-        pass
-
-    def kill(self):
-        if self.isRunning():
-            self.exit(0)
-
-    def on_message(self, message):
-        self.onMessage.emit(message)
-        pass
-
-    def run(self):
-        pooling_data={"limit":1, "offset":-1, "timeout":120}
-        while True:
-            resp_json = self.transac("getUpdates", pooling_data)
-            for result_json in resp_json["result"]:
-                pooling_data["offset"]=result_json["update_id"]+1
-                if result_json["message"]:
-                    self.on_message(result_json["message"])
-        pass
-
-class TelegramTab(QtWidgets.QWidget):
+class TelegramTab(UiTab):
     rows = []
     tg = None
+    pooling_data={"limit":1, "offset":-1, "timeout":120}
 
     def __init__(self, app):
-        super().__init__()
-        self.app = app
+        super().__init__(app)
         self.title = self.app.lang["telegram"]
-
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.sizePolicy().hasHeightForWidth())
-        self.setSizePolicy(sizePolicy)
 
         self.teConsoleOutput = QtWidgets.QTextEdit(self)
         self.teConsoleOutput.setReadOnly(True)
 
         self.teConsoleOutput.setStyleSheet("*{background-color: black; color:rgb(255,255,0)}")
         self.slGCodeMessage = QtWidgets.QLineEdit(self)
+
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.slGCodeMessage.sizePolicy().hasHeightForWidth())
+
         self.slGCodeMessage.setSizePolicy(sizePolicy)
         self.teConsoleOutput.setSizePolicy(sizePolicy)
 
@@ -84,10 +46,37 @@ class TelegramTab(QtWidgets.QWidget):
         self.btSenb.clicked.connect(self.doSend)
         self.addRow(self.app.lang["telegram-bot-welcome"])
 
-        self.tg=TgClient(self.app)
-        self.tg.listen()
-        self.tg.onMessage.connect(self.onMessage)
+        #self.tg=TgClient(self.app)
+        #self.tg.listen()
+        #self.tg.onMessage.connect(self.onMessage)
+        self.pooling()
+        pass
 
+    def pooling(self):
+        import json
+        tg_url="https://api.telegram.org/bot"+self.app.config["telegram"]["key"]+"/getUpdates"
+        self.req=QNetworkRequest(QtCore.QUrl(tg_url))
+        self.req.setRawHeader(b'Content-Type', b'application/json')
+        post_data=json.dumps(self.pooling_data).encode("utf-8")
+        self.reply = self.app.networkManager.post(self.req, post_data)
+        def handleResponse():
+            er = self.reply.error()
+            if er == QNetworkReply.NoError:
+                jresp=json.loads(bytes(self.reply.readAll()).decode())
+                for result_json in jresp["result"]:
+                    self.pooling_data["offset"]=result_json["update_id"]+1
+                    if "message" in result_json:
+                        self.onMessage(result_json["message"])
+            self.req=None
+            self.reply=None
+            self.pooling()
+            pass
+
+        self.reply.finished.connect(handleResponse)
+        self.reply.sslErrors.connect(self.onSslError)
+        pass
+
+    def onSslError(self, reply, sslerror):
         pass
 
     def onMessage(self, message):
@@ -112,7 +101,7 @@ class TelegramTab(QtWidgets.QWidget):
         pass
 
     def __del__(self):
-        self.tg.kill()
+        #self.tg.kill()
         pass
 
     def keyPressEvent(self, event):
@@ -131,7 +120,20 @@ class TelegramTab(QtWidgets.QWidget):
     def doSend(self):
         text=self.slGCodeMessage.text()
         if (len(text)>0):
-            self.tg.transac("sendMessage", {"chat_id":self.app.config["telegram"]["chat_id"], "text":text})
+            tg_url="https://api.telegram.org/bot"+self.app.config["telegram"]["key"]+"/sendMessage"
+            self.req_sm=QNetworkRequest(QtCore.QUrl(tg_url))
+            self.req_sm.setRawHeader(b'Content-Type', b'application/json')
+            post_data=json.dumps({"chat_id":self.app.config["telegram"]["chat_id"], "text":text}).encode("utf-8")
+            self.reply_sm = self.app.networkManager.post(self.req_sm, post_data)
+
+            def handleResponse():
+                self.req_sm=None
+                self.reply_sm=None
+                pass
+
+            self.reply_sm.finished.connect(handleResponse)
+            self.reply_sm.sslErrors.connect(self.onSslError)
+
             self.slGCodeMessage.setSelection(0, len(text))
             self.addRow(text)
         pass
